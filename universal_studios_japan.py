@@ -82,9 +82,9 @@ async def scraper(url):
   
 async def run():
     results = []
-    number_page = 5
+    number_page = 53
     for i in range(0, number_page):
-        url = f"https://www.tripadvisor.com/Attraction_Review-g34515-d102432-Reviews-or{i}0-Universal_Studios_Florida-Orlando_Florida.html"
+        url = f"https://www.tripadvisor.com/Attraction_Review-g298566-d320976-Reviews-or{i}0-Universal_Studios_Japan-Osaka_Osaka_Prefecture_Kinki.html"
         results.append(
             asyncio.create_task(scraper(url))
         )

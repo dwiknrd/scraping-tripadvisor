@@ -82,7 +82,7 @@ async def scraper(url):
   
 async def run():
     results = []
-    number_page = 5
+    number_page = 1
     for i in range(0, number_page):
         url = f"https://www.tripadvisor.com/Attraction_Review-g294264-d2439664-Reviews-or{i}0-Universal_Studios_Singapore-Sentosa_Island.html"
         results.append(
