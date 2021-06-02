@@ -1,6 +1,5 @@
-
 import asyncio
-from arsenic import get_session, keys, browsers, services
+from arsenic import get_session, browsers, services
 import time
 
 import logging
@@ -19,10 +18,10 @@ def set_arsenic_log_level(level = logging.WARNING):
     logger.setLevel(level)
 
 async def get_product_data(body_container):
-    path_to_file = "universal_studio_branch.csv"
+    path_to_file = "universal_studios_singapore.csv"
     csvFile = open(path_to_file, 'a', encoding="utf-8")
     csvWriter = csv.writer(csvFile)
-    csvWriter.writerow(['reviewer', 'rating', 'written_date', 'title', 'review_text', 'branch'])
+    # csvWriter.writerow(['reviewer', 'rating', 'written_date', 'title', 'review_text', 'branch'])
     
     # print(f'ini list_containe{list_container}')
 
@@ -31,6 +30,8 @@ async def get_product_data(body_container):
         # parse reviewer
         reviewerEl = await body_container[j].get_element(".DrjyGw-P._1SRa-qNz.NGv7A1lw._2yS548m8._2cnjB3re._1TAWSgm1._1Z1zA2gh._2-K8UW3T._2AAjjcx8")
         reviewer = await reviewerEl.get_text()
+        if reviewer == "":
+            reviewer = "NA"
 
         # parse rating
         ratingEl = await body_container[j].get_element(".zWXXYhVR")
@@ -40,22 +41,30 @@ async def get_product_data(body_container):
         # parse written_date
         written_dateEl = await body_container[j].get_element(".DrjyGw-P._26S7gyB4._1z-B2F-n._1dimhEoy")
         written_date = await written_dateEl.get_text()
-        written_date = written_date.replace("Written", "")
+        written_date = written_date.replace("Written ", "")
+        if written_date == "":
+            written_date = "NA"
 
         # parse review_title
         titleEl = await body_container[j].get_element("._2tsgCuqy")
         title = await titleEl.get_text()
+        if title == "":
+            title = "NA"
 
         # parse review text
         review_El = await body_container[j].get_element(".DrjyGw-P._26S7gyB4._2nPM5Opx")
         review_textEl = await review_El.get_element("._2tsgCuqy")
         review_text = await review_textEl.get_text()
         review_text = review_text.replace("\n", " ")
+        if review_text == "":
+            review_text = "NA"
         
         # branch
-        branch = "Universal Studios Florida"
-        # branch = "Universal Studios Singapore"
+        # branch = "Universal Studios Florida"
+        branch = "Universal Studios Singapore"
         # branch = "Universal Studios Japan"
+        if branch == "":
+            branch = "Universal Studios Florida"
 
         # print(review)
         data = (reviewer,
@@ -82,11 +91,11 @@ async def scraper(url, limit):
   
 async def run():
     limit = asyncio.Semaphore(10)
-    from_page = 0
-    number_page = 30
+    from_page = 206
+    number_page = 1576
     for i in range(from_page, number_page):
-        url = f'https://www.tripadvisor.com/Attraction_Review-g34515-d102432-Reviews-or{i}0-Universal_Studios_Florida-Orlando_Florida.html'
-        # url = f"https://www.tripadvisor.com/Attraction_Review-g294264-d2439664-Reviews-or{i}0-Universal_Studios_Singapore-Sentosa_Island.html"
+        # url = f'https://www.tripadvisor.com/Attraction_Review-g34515-d102432-Reviews-or{i}0-Universal_Studios_Florida-Orlando_Florida.html'
+        url = f"https://www.tripadvisor.com/Attraction_Review-g294264-d2439664-Reviews-or{i}0-Universal_Studios_Singapore-Sentosa_Island.html"
         # url = f"https://www.tripadvisor.com/Attraction_Review-g298566-d320976-Reviews-or{i}0-Universal_Studios_Japan-Osaka_Osaka_Prefecture_Kinki.html"
         await scraper(url, limit)
 
